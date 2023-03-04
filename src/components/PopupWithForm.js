@@ -42,7 +42,6 @@ const PopupWithForm = ({
           className={`modal__form modal__form-${name}`}
           name={`${name}__form`}
           action="#"
-          noValidate
         >
           {children}
           <button type="submit" className="modal__button modal__button_action_save ">

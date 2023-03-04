@@ -11,7 +11,7 @@ const App = () => {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isConfirmPopupOpen, setConfirmPopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState({ isOpen: false, data: [] });
+  const [selectedCard, setSelectedCard] = React.useState({ isOpen: false });
   const [isPreloaderHide, setPreloaderHide] = React.useState(false);
 
   function handlePreloaderHide() {
@@ -43,7 +43,7 @@ const App = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setSelectedCard({ isOpen: false, data: [] });
+    setSelectedCard({ isOpen: false });
   }
 
   function onCloseClickOverlay(e) {
@@ -84,15 +84,12 @@ const App = () => {
       </PopupWithForm>
       <PopupWithForm
         title="Вы уверены?"
-        buttonText="Сохранить"
+        buttonText="Да"
         name="confirm"
         isOpen={isConfirmPopupOpen}
         onClose={closeAllPopups}
         onCloseClickOverlay={onCloseClickOverlay}
-      >
-        {' '}
-      </PopupWithForm>
-
+      />
       <PopupWithForm
         title="Новое место"
         buttonText="Сохранить"

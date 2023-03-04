@@ -57,10 +57,10 @@ const Main = ({
 
       <section className="photo-gallery content__photo-gallery" aria-label="Фото Галерея">
         <ul className="photo-gallery__items">
-          {cards.map((card, i) => (
+          {cards.map((card) => (
             <Card
               card={card}
-              key={i}
+              key={card._id}
               onCardClick={onCardClick}
               onConfirmPopupOpen={onConfirmPopupOpen}
             />
