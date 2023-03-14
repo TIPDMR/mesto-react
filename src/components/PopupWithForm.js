@@ -8,6 +8,8 @@ const PopupWithForm = ({
   onClose,
   onCloseClickOverlay,
   children,
+  onSubmit,
+  isLoading,
 }) => {
   function handleEscClose(evn) {
     if (evn.key === 'Escape') {
@@ -29,8 +31,7 @@ const PopupWithForm = ({
       className={`modal modal_form_${name} ${isOpen ? 'modal_visible' : ''}`}
       tabIndex="-1"
       role="dialog"
-      onClick={onCloseClickOverlay}
-    >
+      onClick={onCloseClickOverlay}>
       <div className="modal__container" role="document">
         <button
           type="button"
@@ -41,10 +42,13 @@ const PopupWithForm = ({
         <form
           className={`modal__form modal__form-${name}`}
           name={`${name}__form`}
-          action="#"
-        >
+          onSubmit={onSubmit}
+          action="#">
           {children}
-          <button type="submit" className="modal__button modal__button_action_save ">
+          <button
+            type="submit"
+            className={`modal__button modal__button_action_save
+            ${isOpen && isLoading ? 'modal__button_disabled' : ''}`}>
             {buttonText}
           </button>
         </form>

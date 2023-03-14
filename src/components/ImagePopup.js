@@ -4,7 +4,7 @@ const ImagePopup = ({ card, onClose, onCloseClickOverlay }) => {
   const { link, name } = card;
   return (
     <div
-      className={`modal modal_zoom_in ${card.isOpen ? 'modal_visible' : ''}`}
+      className={`modal modal_zoom_in ${card.isOpen && 'modal_visible'}`}
       tabIndex="-1"
       role="dialog"
       onClick={onCloseClickOverlay}

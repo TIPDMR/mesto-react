@@ -5,6 +5,13 @@ import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import Preloader from './Preloader';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import MyApi from '../utils/Api';
+import avatar from '../images/profile/ava.png';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { CardsContext } from '../contexts/CardsContext';
+import AddPlacePopup from './AddPlacePopup';
 
 const App = () => {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -13,8 +20,79 @@ const App = () => {
   const [isConfirmPopupOpen, setConfirmPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({ isOpen: false });
   const [isPreloaderHide, setPreloaderHide] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState({
+    name: 'Загрузка...',
+    about: 'Загрузка...',
+    avatar: avatar,
+  });
+  const [cards, setCards] = React.useState({});
 
-  function handlePreloaderHide() {
+  React.useEffect(() => {
+    Promise.all([MyApi.getUserInfo(), MyApi.getInitialCards()])
+      .then(([userInfo, cards]) => {
+        setCurrentUser(userInfo);
+        setCards(cards);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => onPreloaderHide());
+  }, []);
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((item) => item._id === currentUser._id);
+    const requestLiked = isLiked ? MyApi.delLike(card._id) : MyApi.setLike(card._id);
+
+    requestLiked.then((newCard) => {
+      setCards((state) => state.map((item) => (item._id === card._id ? newCard : item)));
+    });
+  }
+
+  function handleCardDelete(card) {
+    MyApi.delCard(card._id).then((newCard) => {
+      setCards((state) => state.filter((item) => item._id !== card._id));
+    });
+  }
+
+  function handleUpdateUser(name, about) {
+    setIsLoading(true);
+    MyApi.setUserInfo(name, about)
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        closeAllPopups();
+        setIsLoading(false);
+      });
+  }
+
+  function handleUpdateAvatar(avatar) {
+    setIsLoading(true);
+    MyApi.setAvatar(avatar)
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        closeAllPopups();
+        setIsLoading(false);
+      });
+  }
+
+  function handleAddPlace(name, link) {
+    setIsLoading(true);
+    MyApi.setCard(name, link)
+      .then((res) => {
+        setCards([res, ...cards]);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        closeAllPopups();
+        setIsLoading(false);
+      });
+  }
+
+  function onPreloaderHide() {
     setPreloaderHide(true);
   }
 
@@ -53,114 +131,58 @@ const App = () => {
   }
 
   return (
-    <div className="page">
-      <Header />
-      <Main
-        onEditAvatar={handleEditAvatarClick}
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onCardClick={handleCardClick}
-        onPreloaderHide={handlePreloaderHide}
-        onConfirmPopupOpen={handleConfirmPopupOpen}
-      />
-      <Footer />
-      <PopupWithForm
-        title="Обновить аватар"
-        buttonText="Сохранить"
-        name="avatar-edit"
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-        onCloseClickOverlay={onCloseClickOverlay}
-      >
-        <input
-          className="modal__input modal__input_name_avatar-link"
-          type="url"
-          name="avatar-link"
-          id="avatar-link"
-          placeholder="https://somewebsite.com/someimage.jpg"
-          required
-        />
-        <span className="modal__input-error avatar-link-error"></span>
-      </PopupWithForm>
-      <PopupWithForm
-        title="Вы уверены?"
-        buttonText="Да"
-        name="confirm"
-        isOpen={isConfirmPopupOpen}
-        onClose={closeAllPopups}
-        onCloseClickOverlay={onCloseClickOverlay}
-      />
-      <PopupWithForm
-        title="Новое место"
-        buttonText="Сохранить"
-        name="img-add"
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-        onCloseClickOverlay={onCloseClickOverlay}
-      >
-        <input
-          className="modal__input modal__input_name_card-name"
-          pattern="^((?!\s{2}).)*$"
-          type="text"
-          name="card-name"
-          id="card-name"
-          placeholder="Название"
-          minLength="2"
-          maxLength="30"
-          required
-        />
-        <span className="modal__input-error card-name-error"></span>
-        <input
-          className="modal__input modal__input_name_card-img"
-          name="card-img"
-          id="card-img"
-          placeholder="Ссылка на картинку"
-          type="url"
-          required
-        />
-        <span className="modal__input-error card-img-error"></span>
-      </PopupWithForm>
-
-      <PopupWithForm
-        title="Редактировать профиль"
-        buttonText="Сохранить"
-        name="profile"
-        isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}
-        onCloseClickOverlay={onCloseClickOverlay}
-      >
-        <input
-          className="modal__input modal__input_name_name"
-          pattern="^((?!\s{2}).)*$"
-          type="text"
-          name="user-name"
-          id="user-name"
-          minLength="2"
-          maxLength="40"
-          placeholder="Имя"
-          required
-        />
-        <span className="modal__input-error user-name-error"></span>
-        <input
-          className="modal__input modal__input_name_about"
-          pattern="^((?!\s{2}).)*$"
-          type="text"
-          name="user-about"
-          id="user-about"
-          minLength="2"
-          maxLength="200"
-          placeholder="О себе"
-          required
-        />
-        <span className="modal__input-error user-about-error"></span>
-      </PopupWithForm>
-      <ImagePopup
-        card={selectedCard}
-        onClose={closeAllPopups}
-        onCloseClickOverlay={onCloseClickOverlay}
-      />
-      <Preloader isHide={isPreloaderHide} />
-    </div>
+    <CurrentUserContext.Provider value={currentUser}>
+      <CardsContext.Provider value={cards}>
+        <div className="page">
+          <Header />
+          <Main
+            onEditAvatar={handleEditAvatarClick}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onCardClick={handleCardClick}
+            onConfirmPopupOpen={handleConfirmPopupOpen}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+          />
+          <Footer />
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onCloseClickOverlay={onCloseClickOverlay}
+            onUpdateUser={handleUpdateUser}
+            isLoading={isLoading}
+          />
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onCloseClickOverlay={onCloseClickOverlay}
+            onUpdateAvatar={handleUpdateAvatar}
+            isLoading={isLoading}
+          />
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onCloseClickOverlay={onCloseClickOverlay}
+            onAddPlace={handleAddPlace}
+            isLoading={isLoading}
+          />
+          <PopupWithForm
+            title="Вы уверены?"
+            buttonText="Да"
+            name="confirm"
+            isOpen={isConfirmPopupOpen}
+            onClose={closeAllPopups}
+            onCloseClickOverlay={onCloseClickOverlay}
+          />
+          <ImagePopup
+            card={selectedCard}
+            onClose={closeAllPopups}
+            onCloseClickOverlay={onCloseClickOverlay}
+          />
+          <Preloader isHide={isPreloaderHide} />
+        </div>
+      </CardsContext.Provider>
+    </CurrentUserContext.Provider>
   );
 };
 
