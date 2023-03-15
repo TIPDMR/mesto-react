@@ -31,7 +31,7 @@ const PopupWithForm = ({
       className={`modal modal_form_${name} ${isOpen ? 'modal_visible' : ''}`}
       tabIndex="-1"
       role="dialog"
-      onClick={onCloseClickOverlay}>
+      onMouseDown={onCloseClickOverlay}>
       <div className="modal__container" role="document">
         <button
           type="button"
@@ -46,6 +46,7 @@ const PopupWithForm = ({
           action="#">
           {children}
           <button
+            disabled={isLoading}
             type="submit"
             className={`modal__button modal__button_action_save
             ${isOpen && isLoading ? 'modal__button_disabled' : ''}`}>

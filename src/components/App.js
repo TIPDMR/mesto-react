@@ -2,7 +2,6 @@ import React from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import Preloader from './Preloader';
 import EditProfilePopup from './EditProfilePopup';
@@ -12,6 +11,7 @@ import avatar from '../images/profile/ava.png';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { CardsContext } from '../contexts/CardsContext';
 import AddPlacePopup from './AddPlacePopup';
+import ConfirmDeleteCard from './ConfirmDeleteCard';
 
 const App = () => {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -21,12 +21,12 @@ const App = () => {
   const [selectedCard, setSelectedCard] = React.useState({ isOpen: false });
   const [isPreloaderHide, setPreloaderHide] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [cards, setCards] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({
     name: 'Загрузка...',
     about: 'Загрузка...',
     avatar: avatar,
   });
-  const [cards, setCards] = React.useState({});
 
   React.useEffect(() => {
     Promise.all([MyApi.getUserInfo(), MyApi.getInitialCards()])
@@ -38,6 +38,10 @@ const App = () => {
       .finally(() => onPreloaderHide());
   }, []);
 
+  /**
+   * Установка Like
+   * @param card
+   */
   function handleCardLike(card) {
     const isLiked = card.likes.some((item) => item._id === currentUser._id);
     const requestLiked = isLiked ? MyApi.delLike(card._id) : MyApi.setLike(card._id);
@@ -47,12 +51,29 @@ const App = () => {
     });
   }
 
+  /**
+   * Удаление карточки
+   * @param card
+   */
   function handleCardDelete(card) {
-    MyApi.delCard(card._id).then((newCard) => {
-      setCards((state) => state.filter((item) => item._id !== card._id));
-    });
+    setIsLoading(true);
+    MyApi.delCard(card._id)
+      .then((newCard) => {
+        setCards((state) => state.filter((item) => item._id !== card._id));
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        closeAllPopups();
+        setIsLoading(false);
+      });
   }
 
+  /**
+   * Обновление данных
+   * Пользователя
+   * @param name
+   * @param about
+   */
   function handleUpdateUser(name, about) {
     setIsLoading(true);
     MyApi.setUserInfo(name, about)
@@ -66,6 +87,11 @@ const App = () => {
       });
   }
 
+  /**
+   * Обновление аватара
+   * Пользователя
+   * @param avatar
+   */
   function handleUpdateAvatar(avatar) {
     setIsLoading(true);
     MyApi.setAvatar(avatar)
@@ -79,6 +105,11 @@ const App = () => {
       });
   }
 
+  /**
+   * Добавление новой карточки
+   * @param name
+   * @param link
+   */
   function handleAddPlace(name, link) {
     setIsLoading(true);
     MyApi.setCard(name, link)
@@ -100,7 +131,8 @@ const App = () => {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
-  function handleConfirmPopupOpen() {
+  function handleConfirmPopupOpen(card) {
+    setSelectedCard({ isOpen: false, ...card });
     setConfirmPopupOpen(!isConfirmPopupOpen);
   }
 
@@ -166,13 +198,13 @@ const App = () => {
             onAddPlace={handleAddPlace}
             isLoading={isLoading}
           />
-          <PopupWithForm
-            title="Вы уверены?"
-            buttonText="Да"
-            name="confirm"
+          <ConfirmDeleteCard
             isOpen={isConfirmPopupOpen}
             onClose={closeAllPopups}
             onCloseClickOverlay={onCloseClickOverlay}
+            onClickConfirm={handleCardDelete}
+            isLoading={isLoading}
+            card={selectedCard}
           />
           <ImagePopup
             card={selectedCard}

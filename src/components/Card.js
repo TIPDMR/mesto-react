@@ -14,7 +14,7 @@ const Card = ({ card, onCardClick, onConfirmPopupOpen, onCardLike, onCardDelete 
     onCardLike(card);
   }
   function handleDeleteClick() {
-    onCardDelete(card);
+    onConfirmPopupOpen(card);
   }
 
   return (

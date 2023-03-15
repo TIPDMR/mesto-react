@@ -32,7 +32,7 @@ const AddPlacePopup = ({ isOpen, onClose, onCloseClickOverlay, onAddPlace, isLoa
   return (
     <PopupWithForm
       title="Новое место"
-      buttonText="Сохранить"
+      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
       name="img-add"
       isOpen={isOpen}
       onClose={onClose}
