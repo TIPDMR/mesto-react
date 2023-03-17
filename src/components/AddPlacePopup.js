@@ -1,32 +1,39 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
+import useValidation from '../hooks/useValidation';
 
 const AddPlacePopup = ({ isOpen, onClose, onCloseClickOverlay, onAddPlace, isLoading }) => {
-
-  const [name, setName] = React.useState('');
-  const [imageLink, setImageLink] = React.useState('');
+  const [formValid, setFormValid] = React.useState(false);
+  const name = useValidation();
+  const image = useValidation();
+  const classError = `modal__input-error ${!formValid ? 'modal__error_visible' : ''}`;
 
   React.useEffect(() => {
     if (!isOpen) return;
 
     return () => {
-      setName('');
-      setImageLink('');
+      name.setValue('');
+      name.setInputError('');
+      name.setInputValid(false);
+
+      image.setValue('');
+      image.setInputError('');
+      image.setInputValid(false);
     };
   }, [isOpen]);
 
-
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeImage(e) {
-    setImageLink(e.target.value);
-  }
+  React.useEffect(() => {
+    if (!isOpen) return;
+    if (name.inputValid && image.inputValid) {
+      setFormValid(true);
+    } else {
+      setFormValid(false);
+    }
+  }, [name.inputValid, image.inputValid, isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    onAddPlace(name, imageLink);
+    onAddPlace(name.value, image.value);
   }
 
   return (
@@ -38,6 +45,7 @@ const AddPlacePopup = ({ isOpen, onClose, onCloseClickOverlay, onAddPlace, isLoa
       onClose={onClose}
       onSubmit={handleSubmit}
       isLoading={isLoading}
+      buttonDisable={!formValid}
       onCloseClickOverlay={onCloseClickOverlay}>
       <input
         className="modal__input modal__input_name_card-name"
@@ -48,22 +56,22 @@ const AddPlacePopup = ({ isOpen, onClose, onCloseClickOverlay, onAddPlace, isLoa
         placeholder="Название"
         minLength="2"
         maxLength="30"
-        onChange={handleChangeName}
-        value={name}
+        onChange={name.handleChange}
+        value={name.value}
         required
       />
-      <span className="modal__input-error card-name-error"></span>
+      <span className={classError}>{name.inputError}</span>
       <input
         className="modal__input modal__input_name_card-img"
         name="card-img"
         id="card-img"
         placeholder="Ссылка на картинку"
-        onChange={handleChangeImage}
+        onChange={image.handleChange}
         type="url"
-        value={imageLink}
+        value={image.value}
         required
       />
-      <span className="modal__input-error card-img-error"></span>
+      <span className={classError}>{image.inputError}</span>
     </PopupWithForm>
   );
 };

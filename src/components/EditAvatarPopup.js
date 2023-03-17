@@ -1,8 +1,30 @@
 import React, { useRef } from 'react';
 import PopupWithForm from './PopupWithForm';
+import useValidation from '../hooks/useValidation';
 
 const EditAvatarPopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateAvatar, isLoading }) => {
   const inputAvatar = useRef(null);
+  const [formValid, setFormValid] = React.useState(false);
+  const avatar = useValidation();
+  const classError = `modal__input-error ${!formValid ? 'modal__error_visible' : ''}`;
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    return () => {
+      avatar.setValue('');
+      avatar.setInputError('');
+      avatar.setInputValid(false);
+    };
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    if (avatar.inputValid) {
+      setFormValid(true);
+    } else {
+      setFormValid(false);
+    }
+  }, [avatar.inputValid, isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -18,6 +40,7 @@ const EditAvatarPopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateAvatar,
       onClose={onClose}
       onSubmit={handleSubmit}
       isLoading={isLoading}
+      buttonDisable={!formValid}
       onCloseClickOverlay={onCloseClickOverlay}>
       <input
         className="modal__input modal__input_name_avatar-link"
@@ -25,10 +48,12 @@ const EditAvatarPopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateAvatar,
         ref={inputAvatar}
         name="avatar-link"
         id="avatar-link"
+        value={avatar.value}
+        onChange={avatar.handleChange}
         placeholder="https://somewebsite.com/someimage.jpg"
         required
       />
-      <span className="modal__input-error avatar-link-error"></span>
+      <span className={classError}>{avatar.inputError}</span>
     </PopupWithForm>
   );
 };

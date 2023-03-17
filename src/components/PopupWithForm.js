@@ -10,6 +10,7 @@ const PopupWithForm = ({
   children,
   onSubmit,
   isLoading,
+  buttonDisable,
 }) => {
   function handleEscClose(evn) {
     if (evn.key === 'Escape') {
@@ -46,10 +47,10 @@ const PopupWithForm = ({
           action="#">
           {children}
           <button
-            disabled={isLoading}
+            disabled={isLoading || buttonDisable}
             type="submit"
             className={`modal__button modal__button_action_save
-            ${isOpen && isLoading ? 'modal__button_disabled' : ''}`}>
+            ${isOpen && (isLoading || buttonDisable) ? 'modal__button_disabled' : ''}`}>
             {buttonText}
           </button>
         </form>
