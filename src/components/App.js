@@ -6,7 +6,7 @@ import ImagePopup from './ImagePopup';
 import Preloader from './Preloader';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
-import MyApi from '../utils/Api';
+import Api from '../utils/api';
 import avatar from '../images/profile/ava.png';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { CardsContext } from '../contexts/CardsContext';
@@ -29,7 +29,7 @@ const App = () => {
   });
 
   React.useEffect(() => {
-    Promise.all([MyApi.getUserInfo(), MyApi.getInitialCards()])
+    Promise.all([Api.getUserInfo(), Api.getInitialCards()])
       .then(([userInfo, cards]) => {
         setCurrentUser(userInfo);
         setCards(cards);
@@ -44,7 +44,7 @@ const App = () => {
    */
   function handleCardLike(card) {
     const isLiked = card.likes.some((item) => item._id === currentUser._id);
-    const requestLiked = isLiked ? MyApi.delLike(card._id) : MyApi.setLike(card._id);
+    const requestLiked = isLiked ? Api.delLike(card._id) : Api.setLike(card._id);
 
     requestLiked.then((newCard) => {
       setCards((state) => state.map((item) => (item._id === card._id ? newCard : item)));
@@ -57,7 +57,7 @@ const App = () => {
    */
   function handleCardDelete(card) {
     setIsLoading(true);
-    MyApi.delCard(card._id)
+    Api.delCard(card._id)
       .then((newCard) => {
         setCards((state) => state.filter((item) => item._id !== card._id));
       })
@@ -76,7 +76,7 @@ const App = () => {
    */
   function handleUpdateUser(name, about) {
     setIsLoading(true);
-    MyApi.setUserInfo(name, about)
+    Api.setUserInfo(name, about)
       .then((res) => {
         setCurrentUser(res);
       })
@@ -94,7 +94,7 @@ const App = () => {
    */
   function handleUpdateAvatar(avatar) {
     setIsLoading(true);
-    MyApi.setAvatar(avatar)
+    Api.setAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
       })
@@ -112,7 +112,7 @@ const App = () => {
    */
   function handleAddPlace(name, link) {
     setIsLoading(true);
-    MyApi.setCard(name, link)
+    Api.setCard(name, link)
       .then((res) => {
         setCards([res, ...cards]);
       })
