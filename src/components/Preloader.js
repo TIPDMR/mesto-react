@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Preloader = ({ isHide }) => {
   return (
     <div className={`preloader ${isHide ? 'preloader_hidden' : ''} `}>

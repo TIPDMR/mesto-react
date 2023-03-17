@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -14,21 +14,21 @@ import AddPlacePopup from './AddPlacePopup';
 import ConfirmDeleteCard from './ConfirmDeleteCard';
 
 const App = () => {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [isConfirmPopupOpen, setConfirmPopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState({ isOpen: false });
-  const [isPreloaderHide, setPreloaderHide] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [cards, setCards] = React.useState({});
-  const [currentUser, setCurrentUser] = React.useState({
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState({ isOpen: false });
+  const [isPreloaderHide, setPreloaderHide] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cards, setCards] = useState([]);
+  const [currentUser, setCurrentUser] = useState({
     name: 'Загрузка...',
     about: 'Загрузка...',
     avatar: avatar,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([Api.getUserInfo(), Api.getInitialCards()])
       .then(([userInfo, cards]) => {
         setCurrentUser(userInfo);
@@ -46,9 +46,11 @@ const App = () => {
     const isLiked = card.likes.some((item) => item._id === currentUser._id);
     const requestLiked = isLiked ? Api.delLike(card._id) : Api.setLike(card._id);
 
-    requestLiked.then((newCard) => {
-      setCards((state) => state.map((item) => (item._id === card._id ? newCard : item)));
-    });
+    requestLiked
+      .then((newCard) => {
+        setCards((state) => state.map((item) => (item._id === card._id ? newCard : item)));
+      })
+      .catch((err) => console.log(err));
   }
 
   /**

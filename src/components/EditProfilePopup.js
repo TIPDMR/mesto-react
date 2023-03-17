@@ -1,16 +1,16 @@
-import React from 'react';
+import {useEffect,useContext, useState} from 'react';
 import PopupWithForm from './PopupWithForm';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import useValidation from '../hooks/useValidation';
 
 const EditProfilePopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateUser, isLoading }) => {
-  const currentUser = React.useContext(CurrentUserContext);
-  const [formValid, setFormValid] = React.useState(false);
+  const currentUser = useContext(CurrentUserContext);
+  const [formValid, setFormValid] = useState(false);
   const classError = `modal__input-error ${!formValid ? 'modal__error_visible' : ''}`;
   const name = useValidation();
   const description = useValidation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
     name.setValue(currentUser.name);
     description.setValue(currentUser.about);
@@ -24,7 +24,7 @@ const EditProfilePopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateUser, 
     };
   }, [isOpen]);
 
-  React.useEffect(
+  useEffect(
     (e) => {
       if (!isOpen) return;
       if (name.inputValid && description.inputValid) {

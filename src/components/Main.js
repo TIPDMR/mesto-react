@@ -1,4 +1,4 @@
-import React from 'react';
+import { useContext } from 'react';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { CardsContext } from '../contexts/CardsContext';
@@ -12,9 +12,8 @@ const Main = ({
   onCardLike,
   onCardDelete,
 }) => {
-  const currentUser = React.useContext(CurrentUserContext);
-  const cards = React.useContext(CardsContext);
-  const emptyCards = Object.keys(cards).length === 0;
+  const currentUser = useContext(CurrentUserContext);
+  const cards = useContext(CardsContext);
 
   return (
     <main className="content page__content">
@@ -45,17 +44,16 @@ const Main = ({
 
       <section className="photo-gallery content__photo-gallery" aria-label="Фото Галерея">
         <ul className="photo-gallery__items">
-          {!emptyCards &&
-            cards.map((card) => (
-              <Card
-                card={card}
-                key={card._id}
-                onCardClick={onCardClick}
-                onConfirmPopupOpen={onConfirmPopupOpen}
-                onCardLike={onCardLike}
-                onCardDelete={onCardDelete}
-              />
-            ))}
+          {cards?.map((card) => (
+            <Card
+              card={card}
+              key={card._id}
+              onCardClick={onCardClick}
+              onConfirmPopupOpen={onConfirmPopupOpen}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
+            />
+          ))}
         </ul>
       </section>
     </main>

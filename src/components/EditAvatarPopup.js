@@ -1,14 +1,14 @@
-import React, { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import PopupWithForm from './PopupWithForm';
 import useValidation from '../hooks/useValidation';
 
 const EditAvatarPopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateAvatar, isLoading }) => {
   const inputAvatar = useRef(null);
-  const [formValid, setFormValid] = React.useState(false);
+  const [formValid, setFormValid] = useState(false);
   const avatar = useValidation();
   const classError = `modal__input-error ${!formValid ? 'modal__error_visible' : ''}`;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
     return () => {
       avatar.setValue('');
@@ -17,7 +17,7 @@ const EditAvatarPopup = ({ isOpen, onClose, onCloseClickOverlay, onUpdateAvatar,
     };
   }, [isOpen]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
     if (avatar.inputValid) {
       setFormValid(true);

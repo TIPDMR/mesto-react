@@ -1,14 +1,14 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import PopupWithForm from './PopupWithForm';
 import useValidation from '../hooks/useValidation';
 
 const AddPlacePopup = ({ isOpen, onClose, onCloseClickOverlay, onAddPlace, isLoading }) => {
-  const [formValid, setFormValid] = React.useState(false);
+  const [formValid, setFormValid] = useState(false);
   const name = useValidation();
   const image = useValidation();
   const classError = `modal__input-error ${!formValid ? 'modal__error_visible' : ''}`;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
 
     return () => {
@@ -22,7 +22,7 @@ const AddPlacePopup = ({ isOpen, onClose, onCloseClickOverlay, onAddPlace, isLoa
     };
   }, [isOpen]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
     if (name.inputValid && image.inputValid) {
       setFormValid(true);

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 const PopupWithForm = ({
   title,
@@ -18,7 +18,7 @@ const PopupWithForm = ({
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
 
     document.addEventListener('keydown', handleEscClose);

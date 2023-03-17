@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ImagePopup = ({ card, onClose, onCloseClickOverlay }) => {
   const { link, name } = card;
   return (
