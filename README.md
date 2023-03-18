@@ -9,9 +9,11 @@
 
 ## Описание проекта
 
-Практическая работа по курсу веб-разработчик от [Yandex Практикум](https://praktikum.yandex.ru/web/ "Курс Веб-разработчик").
+Mesto - это интересный проект от Яндекс.Практикума, который позволяет изучить множество основных концепций и технологий фронтенд-разработки. [Yandex Практикум](https://praktikum.yandex.ru/web/ "Курс Веб-разработчик").
 
-Одностраничный, адаптивный сайт, где пользователи могут добавлять, удалять, отмечать карточки с фотографиями, редактировать свой профиль.
+В проекте Mesto вы создаете интерактивную страницу, на которой пользователь может просматривать и добавлять фотографии, указывать местоположение,
+ставить лайки, редактировать профиль, изменять аватар и многое другое.
+Это включает в себя работу с множеством различных элементов пользовательского интерфейса, а также взаимодействие с сервером через API.
 
 ### GitHub Pages
 
@@ -23,7 +25,8 @@
 - Flexbox, Grid Layout
 - File Structure and File Paths (Nested BEM)
 - Client-side form validation
-- Webpack
+- Webpack, Babel,
+- Git
 - Figma
 
 ## Инструкция по установке:
@@ -42,9 +45,9 @@ npm run start
 
 ### Figma
 
-* [Макет 4](https://www.figma.com/file/SLGf16iUspCIjC05qUi1dk/YP-project-4-mesto)
-* [Макет 5](https://www.figma.com/file/n0Ho0JWLOCYiVkrboLTVJo/sprint-5-mesto)
-* [Макет 6-7](https://www.figma.com/file/qk3Axq4MZryPzGFfCnUnrP/sprint-6-mesto)
-* [Макет 9](https://www.figma.com/file/hhhIavVTeuilfPPZ6sbifl/JavaScript.-Sprint-9)
+* [Макет 4](https://www.figma.com/file/2cn9N9jSkmxD84oJik7xL7/JavaScript.-Sprint-4?node-id=0%3A1)
+* [Макет 5](https://www.figma.com/file/bjyvbKKJN2naO0ucURl2Z0/JavaScript.-Sprint-5?node-id=0-1)
+* [Макет 6-7](https://www.figma.com/file/kRVLKwYG3d1HGLvh7JFWRT/JavaScript.-Sprint-6?node-id=0-1)
+* [Макет 9](https://www.figma.com/file/PSdQFRHoxXJFs2FH8IXViF/JavaScript.-Sprint-9?node-id=0-1)
 
 
